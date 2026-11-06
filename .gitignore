@@ -8,3 +8,7 @@ dist
 
 # Mission Control Recall (project memory) — private, do not commit
 CLAUDE.local.md
+
+# Local browser verification artifacts
+.playwright-cli/
+output/playwright/

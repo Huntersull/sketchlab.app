@@ -12,9 +12,11 @@ description: >-
 Produce a **GeneratedGraph** JSON object, then open it in Sketch Lab with a `?g=` URL.
 Do **not** emit Mermaid, ASCII art, or markdown fences around the JSON when building the URL.
 
-**App origin (production):** `https://sketchlab.webdevcody.com`
+**App origin (private Hestia):** `https://hestia.tail3fb0e0.ts.net:9443`
 
-Override if the user gives another base (e.g. `http://localhost:5173`).
+Requires access to Hunter's private tailnet. Override with `SKETCHLAB_ORIGIN` or a user-provided base for local development (e.g. `http://localhost:5173`). If this origin is unreachable, return the generated link and report the access limit; do not send the diagram to a public fallback.
+
+The query string contains the diagram. Treat the URL as the board content, and share it only with the intended recipients. Boards persist in IndexedDB for the exact browser profile and origin.
 
 ## Workflow
 
@@ -29,12 +31,21 @@ Override if the user gives another base (e.g. `http://localhost:5173`).
 Example (shell — works without lz-string):
 
 ```bash
-ORIGIN="${SKETCHLAB_ORIGIN:-https://sketchlab.webdevcody.com}"
+ORIGIN="${SKETCHLAB_ORIGIN:-https://hestia.tail3fb0e0.ts.net:9443}"
 JSON='{"name":"Demo","layers":[],"nodes":[{"id":"api","label":"API","kind":"icon","icon":"microservice","color":"#0f2740","layer":0}],"edges":[]}'
 open "${ORIGIN}/?g=$(python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1], safe=""))' "$JSON")"
 ```
 
-On Linux use `xdg-open` instead of `open`. Tell the user the URL if you cannot open a browser.
+On Linux use `xdg-open` instead of `open`. On Windows PowerShell:
+
+```powershell
+$origin = if ($env:SKETCHLAB_ORIGIN) { $env:SKETCHLAB_ORIGIN.TrimEnd("/") } else { "https://hestia.tail3fb0e0.ts.net:9443" }
+$json = '{"name":"Demo","layers":[],"nodes":[{"id":"api","label":"API","kind":"icon","icon":"microservice","color":"#0f2740","layer":0}],"edges":[]}'
+$url = "$origin/?g=$([Uri]::EscapeDataString($json))"
+Start-Process $url
+```
+
+Tell the user the URL if you cannot open a browser.
 
 4. Briefly confirm what you opened (board name + node count). Do not paste the full JSON unless they ask.
 
@@ -119,11 +130,11 @@ server, container, kubernetes, vm, function, microservice, cpu, memory, router, 
 
 ## Install this skill
 
-Anyone can install from the live site (after deploy):
+Agents with tailnet access can install from the live site after deployment. For Codex, use `~/.codex/skills/sketch-lab/SKILL.md` (or `$CODEX_HOME/skills/sketch-lab/SKILL.md`); for a repository-scoped Codex skill use `.agents/skills/sketch-lab/SKILL.md`. Claude Code installation:
 
 ```bash
 mkdir -p ~/.claude/skills/sketch-lab
-curl -fsSL https://sketchlab.webdevcody.com/skills/sketch-lab/SKILL.md \
+curl -fsSL https://hestia.tail3fb0e0.ts.net:9443/skills/sketch-lab/SKILL.md \
   -o ~/.claude/skills/sketch-lab/SKILL.md
 ```
 
@@ -133,7 +144,7 @@ Project-local copy:
 
 ```bash
 mkdir -p .claude/skills/sketch-lab
-curl -fsSL https://sketchlab.webdevcody.com/skills/sketch-lab/SKILL.md \
+curl -fsSL https://hestia.tail3fb0e0.ts.net:9443/skills/sketch-lab/SKILL.md \
   -o .claude/skills/sketch-lab/SKILL.md
 ```
 

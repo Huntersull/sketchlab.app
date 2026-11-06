@@ -43,8 +43,8 @@ describe("decodeGeneratedGraphParam", () => {
 
 describe("generatedGraphShareUrl", () => {
   it("builds a ?g= URL", () => {
-    const url = generatedGraphShareUrl(sample, "https://sketchlab.webdevcody.com/");
-    expect(url.startsWith("https://sketchlab.webdevcody.com/?g=")).toBe(true);
+    const url = generatedGraphShareUrl(sample, "https://hestia.tail3fb0e0.ts.net:9443/");
+    expect(url.startsWith("https://hestia.tail3fb0e0.ts.net:9443/?g=")).toBe(true);
     const g = new URL(url).searchParams.get("g")!;
     expect(decodeGeneratedGraphParam(g)?.name).toBe("Checkout");
   });

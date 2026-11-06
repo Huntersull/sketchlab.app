@@ -324,7 +324,7 @@ export async function mountEditor(
 
   const githubLink = h("a", {
     class: "btn btn--icon",
-    href: "https://github.com/webdevcody/sketchlab.app",
+    href: "https://github.com/Huntersull/sketchlab.app",
     target: "_blank",
     rel: "noopener noreferrer",
     title: "Sketch Lab on GitHub",

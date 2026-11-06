@@ -21,23 +21,29 @@ npm run build     # type-check + production build to dist/
 npm run preview   # serve the production build
 ```
 
-## Claude Code skill (generate diagrams into Sketch Lab)
+## Agent skill (generate diagrams into Sketch Lab)
 
 Agents can emit Sketch Lab `GeneratedGraph` JSON and open it with a `?g=` URL.
-The skill is hosted with the app:
+The fork uses the existing private Hestia origin, preserving browser-local boards. It requires tailnet access. The skill is hosted with the app:
 
-- Skill file: https://sketchlab.webdevcody.com/skills/sketch-lab/SKILL.md
+- Skill file: https://hestia.tail3fb0e0.ts.net:9443/skills/sketch-lab/SKILL.md
 
 Install into Claude Code:
 
 ```bash
 mkdir -p ~/.claude/skills/sketch-lab
-curl -fsSL https://sketchlab.webdevcody.com/skills/sketch-lab/SKILL.md \
+curl -fsSL https://hestia.tail3fb0e0.ts.net:9443/skills/sketch-lab/SKILL.md \
   -o ~/.claude/skills/sketch-lab/SKILL.md
 ```
 
 Then restart Claude Code and ask for a Sketch Lab diagram. The agent builds
-`https://sketchlab.webdevcody.com/?g=<uri-encoded-json>` and opens it.
+`https://hestia.tail3fb0e0.ts.net:9443/?g=<uri-encoded-json>` and opens it.
+
+For Codex, the repository includes `.agents/skills/sketch-lab/SKILL.md`. Install the same file into `~/.codex/skills/sketch-lab/SKILL.md` for use across projects. The in-app Skill dialog always links to its current deployment, including local development. `SKETCHLAB_ORIGIN` can override the skill example's default origin.
+
+The upstream analytics tag is removed to keep private board activity private. The optional OpenAI panel still contacts OpenAI only when deliberately used.
+
+Deployment preparation and rollback: [Hestia](deploy/hestia/README.md).
 
 ## How performance is kept flat with many shapes
 
