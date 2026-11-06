@@ -1,7 +1,8 @@
 import { h, toast } from "./dom";
+import { skillUrl } from "./skillUrl";
 
-/** Production-hosted skill file agents can install from. */
-export const SKILL_URL = "https://sketchlab.webdevcody.com/skills/sketch-lab/SKILL.md";
+/** Install the skill from the same deployment as this app. */
+export const SKILL_URL = skillUrl();
 
 function copyText(text: string, successToast: string): void {
   if (navigator.clipboard) {
