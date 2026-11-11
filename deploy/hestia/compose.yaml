@@ -1,0 +1,52 @@
+name: sketchlab
+
+services:
+  app:
+    container_name: sketchlab
+    build:
+      context: /srv/infra/sketchlab.app
+      dockerfile: /srv/stacks/sketchlab/Dockerfile
+      args:
+        SKETCHLAB_SOURCE_COMMIT: ${SKETCHLAB_SOURCE_COMMIT:?Set the exact reviewed fork commit}
+    image: sketchlab:${SKETCHLAB_SOURCE_COMMIT:?Set the exact reviewed fork commit}
+    pull_policy: never
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 10s
+    user: "101:101"
+    entrypoint:
+      - /usr/sbin/nginx
+    command:
+      - -g
+      - daemon off;
+    ports:
+      - "127.0.0.1:8788:8080"
+    volumes:
+      - type: bind
+        source: /srv/stacks/sketchlab/nginx.conf
+        target: /etc/nginx/nginx.conf
+        read_only: true
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - wget -qO- http://127.0.0.1:8080/healthz | grep -qx healthy
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: local
+      options:
+        max-size: 10m
+        max-file: "3"
+    labels:
+      com.hestia.service: sketchlab
+      com.hestia.exposure: tailnet-only
+      com.hestia.source-commit: ${SKETCHLAB_SOURCE_COMMIT:?Set the exact reviewed fork commit}
